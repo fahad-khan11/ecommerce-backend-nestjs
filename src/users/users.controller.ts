@@ -1,34 +1,59 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserSignupDto } from './dto/user-signup-dto';
+import { UserEntity } from './entities/user.entity';
+import { UserSiginDto } from './dto/usersigin.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth-guards';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @Post('signup')
+  async signup(@Body() signUpDto: UserSignupDto): Promise<{ user: UserEntity }> {
+    return { user: await this.usersService.signup(signUpDto) };
+  }
+
+  @Post('signin')
+  async signin(@Body() signDto:UserSiginDto):Promise<{user:UserEntity;token:string}>{
+    return await this.usersService.signin(signDto)
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  getAllUsers() {
+    return this.usersService.getAllUsers();
+  }
+
+  @Get('Profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  getProfile(@CurrentUser() currentUser : UserEntity){
+    return currentUser
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getUserById(@Param('id') id:number){
+    return this.usersService.getUserById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiBody({ type: UserSignupDto }) 
+  async updateUser(@Param('id') id:number,@Body() updataData:Partial<UserSignupDto>){
+    return this.usersService.updateUser(id,updataData)
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async DeleteUser(@Param('id') id:number){
+    return this.usersService.Delete(id)
   }
 }
