@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { dataSourceOptions } from 'db/data-source';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot(dataSourceOptions), 
-    UsersModule,
+    UsersModule, CategoriesModule,
   ],
 })
 export class AppModule {

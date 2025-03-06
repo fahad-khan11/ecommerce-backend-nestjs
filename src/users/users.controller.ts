@@ -6,6 +6,8 @@ import { UserSiginDto } from './dto/usersigin.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guards';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { RoleGuards } from 'src/auth/role.guards';
+import { Roles } from 'src/decorators/Roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -22,7 +24,8 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,RoleGuards)
+  @Roles('user')
   @ApiBearerAuth()
   getAllUsers() {
     return this.usersService.getAllUsers();
