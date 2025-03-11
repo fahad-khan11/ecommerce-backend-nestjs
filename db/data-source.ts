@@ -6,6 +6,7 @@ import { ProductEntity } from 'src/products/entities/product.entity';
 import { ReviewEntity } from 'src/reviews/entities/review.entity';
 import { OrderEntity } from 'src/orders/entities/order.entity';
 import { ShippingEntity } from 'src/orders/entities/Shipping.entity';
+import { OrdersProductsEntity } from 'src/orders/entities/orders-products.entity';
 config(); 
 
 export const dataSourceOptions: DataSourceOptions = {
@@ -17,10 +18,10 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DB_NAME,
   synchronize: true,
   logging: false,
-  entities: [UserEntity, CategoryEntity, ProductEntity,ReviewEntity,OrderEntity,ShippingEntity],
-  // Use the compiled migration files in dist folder to avoid duplicates.
+  entities: [UserEntity, CategoryEntity, ProductEntity,ReviewEntity,OrderEntity,ShippingEntity,OrdersProductsEntity],
   migrations: [process.cwd() + '/dist/db/migration/*.js'],
 };
 
 const dataSource = new DataSource(dataSourceOptions);
+dataSource.initialize()
 export default dataSource;
