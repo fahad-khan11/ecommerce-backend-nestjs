@@ -2,33 +2,31 @@ import { OrderEntity } from "src/orders/entities/order.entity";
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('shippings')
-
 export class ShippingEntity {
     @PrimaryGeneratedColumn()
-    id : number
+    id: number;
 
     @Column()
-    phone : string
+    phone: string;
 
-    @Column({ default: ''})
-    name:string
-
-    @Column()
-    address :string
+    @Column({ default: '' })
+    name: string;
 
     @Column()
-    city : string
+    address: string;
 
     @Column()
-    postCode : string
+    city: string;
 
     @Column()
-    state : string
+    postCode: string;
 
     @Column()
-    country:string
+    state: string;
 
-    @OneToOne(()=>OrderEntity,(order)=>order.shippingAdress)
-    order :OrderEntity
+    @Column()
+    country: string;
 
+    @OneToOne(() => OrderEntity, (order) => order.shippingAdress)
+    order: OrderEntity;
 }
